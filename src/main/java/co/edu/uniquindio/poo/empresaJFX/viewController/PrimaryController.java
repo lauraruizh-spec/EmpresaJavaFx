@@ -1,34 +1,24 @@
 package co.edu.uniquindio.poo.empresaJFX.viewController;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-import App;
+import co.edu.uniquindio.poo.empresaJFX.App;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 
 public class PrimaryController {
-    @FXML
-    private ResourceBundle resources;
 
-    App app;
-    @FXML
-    private URL location;
-
-    @FXML
-    private Button primaryButton;
+    private App app;
 
     @FXML
     void onOpenCrudCliente() {
         app.openCrudCliente();
     }
 
+
+    @FXML
+    void onOpenCrudProducto() {
+        app.openCrudProducto();
+    }
+
     public void setApp(App app) {
         this.app = app;
     }
-
-    @FXML
-    void initialize() {
-
-    }
 }
-

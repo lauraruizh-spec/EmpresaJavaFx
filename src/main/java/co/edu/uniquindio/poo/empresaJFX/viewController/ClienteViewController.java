@@ -1,9 +1,6 @@
 package co.edu.uniquindio.poo.empresaJFX.viewController;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
-import App;
+import co.edu.uniquindio.poo.empresaJFX.App;
 import co.edu.uniquindio.poo.empresaJFX.controller.ClienteController;
 import co.edu.uniquindio.poo.empresaJFX.model.Cliente;
 import javafx.beans.property.SimpleStringProperty;
@@ -15,50 +12,32 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 public class ClienteViewController {
 
-    ClienteController clienteController;
-    ObservableList<Cliente> listClientes = FXCollections.observableArrayList();
-    Cliente selectedCliente;
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-    @FXML
-    private TextField txtNombre;
-
-    @FXML
-    private Button btnLimpiar;
-
-    @FXML
-    private TableView<Cliente> tblListCliente;
-
-    @FXML
-    private Button btnEliminar;
-
-    @FXML
-    private Button btnActualizarCliente;
-
-    @FXML
-    private TableColumn<Cliente, String> tbcNombre;
-
-    @FXML
-    private TextField txtApellido;
-
-    @FXML
-    private TableColumn<Cliente, String> tbcApellido;
-
-    @FXML
-    private Button btbAgregarCliente;
-
-    @FXML
-    private TableColumn<Cliente, String> tbcCedula;
-
-    @FXML
-    private TextField txtCedula;
+    private ClienteController clienteController;
+    private ObservableList<Cliente> listClientes = FXCollections.observableArrayList();
+    private Cliente selectedCliente;
     private App app;
+
+    @FXML private ResourceBundle resources;
+    @FXML private URL location;
+
+    @FXML private TextField txtCedula;
+    @FXML private TextField txtNombre;
+    @FXML private TextField txtApellido;
+
+    @FXML private Button btbAgregarCliente;
+    @FXML private Button btnActualizarCliente;
+    @FXML private Button btnEliminar;
+    @FXML private Button btnLimpiar;
+
+    @FXML private TableView<Cliente> tblListCliente;
+    @FXML private TableColumn<Cliente, String> tbcCedula;
+    @FXML private TableColumn<Cliente, String> tbcNombre;
+    @FXML private TableColumn<Cliente, String> tbcApellido;
 
     @FXML
     void onAgregarCliente() {
@@ -82,25 +61,16 @@ public class ClienteViewController {
 
     @FXML
     void initialize() {
-        this.app=app;
-        clienteController = new ClienteController(app.empresa);
-        initView();
+
     }
 
     private void initView() {
-        // Traer los datos del cliente a la tabla
         initDataBinding();
-
-        // Obtiene la lista
         obtenerClientes();
 
-        // Limpiar la tabla
         tblListCliente.getItems().clear();
-
-        // Agregar los elementos a la tabla
         tblListCliente.setItems(listClientes);
 
-        // Seleccionar elemento de la tabla
         listenerSelection();
     }
 
@@ -108,7 +78,6 @@ public class ClienteViewController {
         tbcCedula.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCedula()));
         tbcNombre.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getNombre()));
         tbcApellido.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getApellido()));
-        // Usamos SimpleObjectProperty para manejar Double y Integer correctamente
     }
 
     private void obtenerClientes() {
@@ -139,12 +108,11 @@ public class ClienteViewController {
     }
 
     private Cliente buildCliente() {
-        Cliente cliente = new Cliente(txtCedula.getText(), txtNombre.getText(), txtApellido.getText());
-        return cliente;
+        return new Cliente(txtCedula.getText(), txtNombre.getText(), txtApellido.getText());
     }
 
     private void eliminarCliente() {
-        if (clienteController.eliminarCliente(txtCedula.getText())) {
+        if (selectedCliente != null && clienteController.eliminarCliente(txtCedula.getText())) {
             listClientes.remove(selectedCliente);
             limpiarCamposCliente();
             limpiarSeleccion();
@@ -152,13 +120,13 @@ public class ClienteViewController {
     }
 
     private void actualizarCliente() {
-
+        Cliente clienteActualizado = buildCliente();
         if (selectedCliente != null &&
-                clienteController.actualizarCliente(selectedCliente.getCedula(), buildCliente())) {
+                clienteController.actualizarCliente(selectedCliente.getCedula(), clienteActualizado)) {
 
             int index = listClientes.indexOf(selectedCliente);
             if (index >= 0) {
-                listClientes.set(index, buildCliente());
+                listClientes.set(index, clienteActualizado);
             }
 
             tblListCliente.refresh();
@@ -180,5 +148,7 @@ public class ClienteViewController {
 
     public void setApp(App app) {
         this.app = app;
+        this.clienteController = new ClienteController(app.empresa);
+        initView();
     }
 }
